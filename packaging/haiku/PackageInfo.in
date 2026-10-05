@@ -1,0 +1,39 @@
+name			TrimFast
+version			@VERSION@-@REVISION@
+architecture		@ARCH@
+summary			"Lossless video trimmer"
+description		"TrimFast cuts a video to the part you want without re-encoding it. \
+Set an IN and an OUT point with the keyboard, then export: picture, audio, subtitles, \
+chapters and metadata are copied exactly as they were (FFmpeg stream copy). \
+It also handles Insta360 .insv recordings, exporting both lens files together and \
+keeping the camera's own data. It is a tool for tidying up clips you have already \
+shot, not a video editor."
+packager		"@PACKAGER@"
+vendor			"TrimFast"
+copyrights		{
+	"2026 Michihiko Mikami"
+}
+licenses		{
+	"@LICENSE@"
+}
+provides		{
+	trimfast = @VERSION@
+	app:TrimFast = @VERSION@
+	cmd:trimfast = @VERSION@
+}
+requires		{
+	haiku >= r1~beta5
+	lib:libQt6Core >= 6.5
+	lib:libQt6Gui >= 6.5
+	lib:libQt6Widgets >= 6.5
+	lib:libQt6Multimedia >= 6.5
+	cmd:ffmpeg >= 5
+	cmd:ffprobe >= 5
+}
+urls			{
+	"https://github.com/taoman26/TrimFast"
+}
+global-writable-files	{
+}
+user-settings-files	{
+}

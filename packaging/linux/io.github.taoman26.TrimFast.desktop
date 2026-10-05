@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=TrimFast
+GenericName=Lossless Video Trimmer
+GenericName[ja]=無劣化動画トリマー
+Comment=Cut a video without re-encoding it
+Comment[ja]=再エンコードなしで動画の前後を切り出す
+Exec=trimfast %f
+Icon=trimfast
+Terminal=false
+Categories=AudioVideo;Video;AudioVideoEditing;
+MimeType=video/mp4;video/quicktime;video/x-matroska;video/webm;video/x-msvideo;video/mpeg;video/x-m4v;
+Keywords=video;trim;cut;lossless;ffmpeg;insta360;
+StartupWMClass=trimfast

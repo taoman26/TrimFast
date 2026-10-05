@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.taoman26.TrimFast</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>TrimFast</name>
+  <summary>Lossless video trimmer</summary>
+  <description>
+    <p>
+      TrimFast cuts a video to the part you want without re-encoding it. Set an IN and an OUT
+      point with the keyboard, then export: picture, audio, subtitles, chapters and metadata are
+      copied exactly as they were (FFmpeg stream copy), and it is done in seconds.
+    </p>
+    <p>
+      It is a tool for tidying up clips you have already shot, not a video editor: no effects,
+      no titles, no transitions. Insta360 .insv recordings are supported: both lens files are
+      exported together and the camera's own data is kept.
+    </p>
+    <p>Requires the ffmpeg and ffprobe programs to be installed.</p>
+  </description>
+  <launchable type="desktop-id">io.github.taoman26.TrimFast.desktop</launchable>
+  <url type="homepage">https://github.com/taoman26/TrimFast</url>
+  <url type="bugtracker">https://github.com/taoman26/TrimFast/issues</url>
+  <url type="vcs-browser">https://github.com/taoman26/TrimFast</url>
+  <provides>
+    <binary>trimfast</binary>
+  </provides>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Video</category>
+  </categories>
+  <keywords>
+    <keyword>video</keyword>
+    <keyword>trim</keyword>
+    <keyword>cut</keyword>
+    <keyword>lossless</keyword>
+  </keywords>
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </supports>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.1.2" date="2026-10-05"/>
+    <release version="0.1.1" date="2026-10-05"/>
+    <release version="0.1.0" date="2026-10-05"/>
+  </releases>
+</component>
