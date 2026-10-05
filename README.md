@@ -13,11 +13,36 @@ network, no telemetry, no cloud). Made for **Haiku** first; it also runs on **Li
 * **Keyboard first**: I and O mark the part to keep, Ctrl+E exports.
 * **Safe**: an export either completes or leaves nothing behind; existing files are never overwritten
   without asking; the result is checked against the original.
-* **Insta360** `.insv`: both lens files are cut together and the camera data is kept.
+* **Insta360** `.insv`: both lens files are cut together and the gyro and stabilisation data stay
+  usable: see [For Insta360 creators](#for-insta360-creators).
 
 Home page: <https://github.com/taoman26/TrimFast>  
 Downloads: [Releases](https://github.com/taoman26/TrimFast/releases) · Bug reports and ideas: [Issues](https://github.com/taoman26/TrimFast/issues)  
 The current version and what changed in each: [CHANGELOG.md](CHANGELOG.md).
+
+## For Insta360 creators
+
+**Trim INSV before reframing. Keep gyro and stabilization data.**
+
+A plain FFmpeg cut of an `.insv` drops what the camera stores at the end of the file (gyro data and
+lens calibration), and an editor that re-encodes costs quality. TrimFast cuts the recording the way
+the camera made it:
+
+* **Trim INSV before reframing.** Open `VID_…_00_….insv`: TrimFast finds the `_10_` file, and one
+  export cuts both lenses with the same range. The new files keep the camera's naming pattern, so
+  Insta360 Studio opens them as **one** 360 video, ready for reframing.
+* **Keep gyro and stabilization data.** The camera's motion data is cut to your clip, so Studio's
+  stabilisation and horizon levelling keep working on the trimmed footage. The lens calibration and
+  the camera's header data are carried over, too.
+* **No re-encoding, no quality loss.** The video is copied as recorded (FFmpeg stream copy), so only
+  the part you keep is read and written: a cut takes seconds, not the time a re-encode would.
+* **Nothing you cut away stays behind.** The camera embeds full-resolution preview pictures of the
+  recording in the file; TrimFast removes them from the export, so a face or a place you cut out is
+  not hidden in the trimmed file.
+
+Checked in Insta360 Studio with a recording from an **Insta360 ONE X2**; reframing itself has not been
+tried. Other camera models have not been examined: for a file with an unfamiliar layout TrimFast
+copies the camera data unchanged and says so. Details: [Insta360](#insta360) below.
 
 ## Install
 
@@ -223,3 +248,6 @@ the number is set in one place and checked by `scripts/version.py` (see
 
 MIT, see [LICENSE](LICENSE). Qt and FFmpeg are not part of TrimFast: they are separate packages,
 installed alongside and used under their own licences.
+
+Insta360 and Insta360 Studio are trademarks of their respective owners. TrimFast is an independent
+project and is not affiliated with or endorsed by Insta360.
