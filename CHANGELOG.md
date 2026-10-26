@@ -8,6 +8,11 @@ the release steps are in [docs/releasing.md](docs/releasing.md).
 
 ## [Unreleased]
 
+### Changed
+
+- **New look, with a light and a dark theme.** *View → Theme* chooses System (follows the desktop),
+  Light or Dark; the choice is remembered. The timeline, preview and buttons were redrawn to match.
+
 ## [0.1.2] - 2026-10-05
 
 ### Fixed

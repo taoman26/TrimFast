@@ -10,6 +10,7 @@
 #include "core/OutputPath.h"
 #include "core/SessionManager.h"
 #include "core/SettingsManager.h"
+#include "ui/Theme.h"
 #include "core/ToolLocator.h"
 #include "core/TimeFormat.h"
 #include "playback/VideoPlayer.h"
@@ -17,6 +18,7 @@
 #include "ui/VideoSurface.h"
 
 #include <QAction>
+#include <QActionGroup>
 #include <QApplication>
 #include <QCloseEvent>
 #include <QTimer>
@@ -65,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent, const QString &configDir)
     m_settings = std::make_unique<SettingsManager>(cfg + QStringLiteral("/settings.ini"));
     ToolLocator::setOverride(QStringLiteral("ffmpeg"), m_settings->ffmpegPath());
     ToolLocator::setOverride(QStringLiteral("ffprobe"), m_settings->ffprobePath());
+    Theme::apply(*qobject_cast<QApplication *>(QApplication::instance()), Theme::modeFromName(m_settings->theme()));
 
     setWindowTitle(QStringLiteral("TrimFast"));
     setMinimumSize(960, 600);
@@ -272,6 +275,24 @@ void MainWindow::createMenus()
     edit->addSeparator();
     edit->addAction(m_clearAction);
 
+    QMenu *view = menuBar()->addMenu(tr("&View"));
+    QMenu *themeMenu = view->addMenu(tr("&Theme"));
+    auto *themeGroup = new QActionGroup(this);
+    const Theme::Mode current = Theme::modeFromName(m_settings->theme());
+    const std::pair<QString, Theme::Mode> modes[] = {{tr("&System"), Theme::Mode::System},
+                                                     {tr("&Light"), Theme::Mode::Light},
+                                                     {tr("&Dark"), Theme::Mode::Dark}};
+    for (const auto &[text, mode] : modes) {
+        QAction *a = themeMenu->addAction(text);
+        a->setCheckable(true);
+        a->setChecked(mode == current);
+        themeGroup->addAction(a);
+        connect(a, &QAction::triggered, this, [this, mode] {
+            m_settings->setTheme(Theme::modeName(mode));
+            Theme::apply(*qobject_cast<QApplication *>(QApplication::instance()), mode);
+        });
+    }
+
     QMenu *help = menuBar()->addMenu(tr("&Help"));
     help->addAction(m_shortcutsAction);
     help->addAction(m_aboutAction);
@@ -284,8 +305,8 @@ void MainWindow::createCentral()
 {
     auto *central = new QWidget;
     auto *root = new QVBoxLayout(central);
-    root->setContentsMargins(8, 8, 8, 8);
-    root->setSpacing(6);
+    root->setContentsMargins(14, 12, 14, 12);
+    root->setSpacing(8);
 
     // Preview + position overlay row.
     m_video = new VideoSurface;
@@ -293,12 +314,15 @@ void MainWindow::createCentral()
 
     m_positionLabel = new QLabel(TimeFormat::format(0));
     m_positionLabel->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    m_positionLabel->setObjectName(QStringLiteral("position"));
     m_positionLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     m_positionLabel->setToolTip(tr("Current position"));
     root->addWidget(m_positionLabel);
 
     // Timeline.
-    root->addWidget(new QLabel(tr("Timeline")));
+    auto *timelineTitle = new QLabel(tr("Timeline"));
+    timelineTitle->setObjectName(QStringLiteral("dim"));
+    root->addWidget(timelineTitle);
     m_timeline = new TimelineWidget;
     root->addWidget(m_timeline);
 
@@ -320,6 +344,7 @@ void MainWindow::createCentral()
         QFont f = mono;
         f.setBold(true);
         l->setFont(f);
+        l->setObjectName(QStringLiteral("accent"));
     }
     m_inEdit = makeEdit();
     m_outEdit = makeEdit();
@@ -327,6 +352,8 @@ void MainWindow::createCentral()
     m_modeLabel = new QLabel(tr("Mode : Stream Copy (lossless)"));
     m_durationLabel->setFont(mono);
     m_modeLabel->setFont(mono);
+    m_durationLabel->setObjectName(QStringLiteral("dim"));
+    m_modeLabel->setObjectName(QStringLiteral("dim"));
     grid->addWidget(inLabel, 0, 0);
     grid->addWidget(m_inEdit, 0, 1);
     grid->addWidget(m_durationLabel, 0, 2);
@@ -341,6 +368,7 @@ void MainWindow::createCentral()
     auto makeButton = [this](const QString &text, QAction *action) {
         auto *b = new QPushButton(text);
         b->setMinimumWidth(130);
+        b->setCursor(Qt::PointingHandCursor);
         connect(b, &QPushButton::clicked, action, &QAction::trigger);
         return b;
     };
