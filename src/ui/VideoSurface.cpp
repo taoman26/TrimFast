@@ -1,5 +1,7 @@
 #include "ui/VideoSurface.h"
 
+#include "ui/Theme.h"
+
 #include <QPainter>
 #include <QVideoFrame>
 
@@ -43,9 +45,11 @@ QSize VideoSurface::minimumSizeHint() const
 void VideoSurface::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.fillRect(rect(), QColor(245, 245, 245));
-    p.setPen(QColor(150, 150, 150));
-    p.drawRect(rect().adjusted(0, 0, -1, -1));
+    const Theme::Colors &c = Theme::colors();
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(c.surfaceLow);
+    p.setPen(QPen(c.border, 1));
+    p.drawRoundedRect(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5), 8, 8);
 
     // Frame centered in the surface, keeping the aspect ratio (16:9 placeholder when empty).
     const QSize source = m_image.isNull() ? QSize(16, 9) : m_image.size();
@@ -61,17 +65,15 @@ void VideoSurface::paintEvent(QPaintEvent *)
 
     if (!m_image.isNull()) {
         p.drawImage(frame, m_image);
-        p.setPen(QColor(90, 90, 90));
-        p.drawRect(frame.adjusted(-1, -1, 0, 0));
         return;
     }
 
-    p.fillRect(frame, QColor(232, 232, 232));
-    p.setPen(QColor(90, 90, 90));
-    p.drawRect(frame.adjusted(0, 0, -1, -1));
+    p.setBrush(c.surface);
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(frame, 6, 6);
+    p.setPen(c.textDim);
 
     QFont big = font();
-    big.setBold(true);
     big.setPointSizeF(big.pointSizeF() * 1.8);
     p.setFont(big);
     p.drawText(frame.adjusted(0, 0, 0, -font().pointSize() * 2), Qt::AlignCenter, m_title);

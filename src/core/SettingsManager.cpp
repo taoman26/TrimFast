@@ -43,6 +43,16 @@ void SettingsManager::setFfprobePath(const QString &path)
     setValue(QStringLiteral("tools/ffprobe"), path);
 }
 
+QString SettingsManager::theme() const
+{
+    return value(QStringLiteral("ui/theme"));
+}
+
+void SettingsManager::setTheme(const QString &name)
+{
+    setValue(QStringLiteral("ui/theme"), name);
+}
+
 QString SettingsManager::outputSuffix() const
 {
     const QString s = value(QStringLiteral("output/suffix"));

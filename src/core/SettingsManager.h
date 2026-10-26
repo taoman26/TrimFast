@@ -19,6 +19,10 @@ public:
     QString outputSuffix() const;
     void setOutputSuffix(const QString &suffix);
 
+    // "system", "light" or "dark"; empty = "system".
+    QString theme() const;
+    void setTheme(const QString &name);
+
     static QString defaultOutputSuffix() { return QStringLiteral("_trim"); }
 
 private:

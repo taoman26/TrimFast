@@ -85,6 +85,8 @@ add_library(trimfast_app STATIC
     src/app/MainWindow.h
     src/app/TrimFastApplication.cpp
     src/app/TrimFastApplication.h
+    src/ui/Theme.cpp
+    src/ui/Theme.h
     src/ui/TimelineWidget.cpp
     src/ui/TimelineWidget.h
     src/ui/VideoSurface.cpp

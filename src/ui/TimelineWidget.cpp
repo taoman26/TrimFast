@@ -1,6 +1,7 @@
 #include "ui/TimelineWidget.h"
 
 #include "core/TimelineScale.h"
+#include "ui/Theme.h"
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -12,11 +13,6 @@ constexpr int kRulerTop = 6;
 constexpr int kTrackTop = 52;
 constexpr int kTrackHeight = 28;
 constexpr double kMinMajorPx = 90.0;
-const QColor kLine(150, 150, 150);
-const QColor kDark(90, 90, 90);
-const QColor kPlayhead(200, 40, 40);
-const QColor kBlue(51, 102, 152);
-const QColor kBlueFill(150, 190, 235);
 constexpr double kGrabPx = 9.0; // marker hit radius
 } // namespace
 
@@ -98,9 +94,17 @@ void TimelineWidget::clear()
 void TimelineWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.fillRect(rect(), Qt::white);
+    const Theme::Colors &c = Theme::colors();
+    const QColor kLine = c.border;
+    const QColor kDark = c.textDim;
+    const QColor kPlayhead = c.playhead;
+    const QColor kBlue = c.accent;
+    const QColor kBlueFill = c.accentFill;
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(c.surfaceLow);
     p.setPen(kLine);
-    p.drawRect(rect().adjusted(0, 0, -1, -1));
+    p.drawRoundedRect(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5), 8, 8);
+    p.setBrush(Qt::NoBrush);
 
     const double x0 = trackLeft();
     const double x1 = trackRight();
@@ -143,9 +147,10 @@ void TimelineWidget::paintEvent(QPaintEvent *)
 
     // Track.
     const QRectF track(x0, kTrackTop, x1 - x0, kTrackHeight);
-    p.fillRect(track, QColor(235, 235, 235));
-    p.setPen(kLine);
-    p.drawRect(track.adjusted(0, 0, -1, -1));
+    p.setPen(Qt::NoPen);
+    p.setBrush(c.surface);
+    p.drawRoundedRect(track, 4, 4);
+    p.setBrush(Qt::NoBrush);
 
     // Selected range: highlighted part of the track.
     const bool hasRange = m_duration > 0 && m_out > m_in;
@@ -155,14 +160,15 @@ void TimelineWidget::paintEvent(QPaintEvent *)
         xIn = TimelineScale::msToX(m_in, m_duration, x0, x1);
         xOut = TimelineScale::msToX(m_out, m_duration, x0, x1);
         const QRectF sel(xIn, kTrackTop, xOut - xIn, kTrackHeight);
-        p.fillRect(sel, kBlueFill);
-        p.setPen(kBlue);
-        p.drawRect(sel.adjusted(0, 0, -1, -1));
+        p.setPen(QPen(kBlue, 1));
+        p.setBrush(kBlueFill);
+        p.drawRoundedRect(sel.adjusted(0.5, 0.5, -0.5, -0.5), 3, 3);
+        p.setBrush(Qt::NoBrush);
     }
 
     // Keyframe ticks (skipped when they would merge into a solid block).
     if (m_duration > 0 && !m_keyframes.isEmpty() && m_keyframes.size() * 3 <= static_cast<qsizetype>(x1 - x0)) {
-        p.setPen(QColor(170, 170, 170));
+        p.setPen(c.keyframe);
         for (qint64 t : m_keyframes.times()) {
             if (t > m_duration)
                 break;
