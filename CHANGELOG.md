@@ -8,6 +8,8 @@ the release steps are in [docs/releasing.md](docs/releasing.md).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-26
+
 ### Changed
 
 - **New look, with a light and a dark theme.** *View → Theme* chooses System (follows the desktop),
@@ -113,5 +115,6 @@ First release: a lossless video trimmer for Haiku and Linux.
 - Needs Qt 6.5 or newer (the FFmpeg backend of Qt Multimedia). On Linux use the AppImage if the
   distribution's Qt is older.
 
-[Unreleased]: https://github.com/taoman26/TrimFast/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/taoman26/TrimFast/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/taoman26/TrimFast/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/taoman26/TrimFast/releases/tag/v0.1.2
